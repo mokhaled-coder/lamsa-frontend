@@ -2,6 +2,8 @@ import { NextResponse, NextRequest } from "next/server";
 import { revalidateTag } from "next/cache";
 import { getBackend } from "../admin/_lib";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const res = await fetch(`${getBackend()}/api/admin/reviews`, {
     next: { revalidate: 3600, tags: ["reviews"] },
