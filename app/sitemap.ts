@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { slugConfigs } from "./lib/categoryConfig";
 import { getAllProducts } from "./lib/productsCache";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 const BASE_URL = "https://lamsasmart.com";
 

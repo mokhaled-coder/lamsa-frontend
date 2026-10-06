@@ -62,11 +62,11 @@ const nextConfig: NextConfig = {
   },
   
   images: {
-    qualities: [75, 80],
-    formats: ["image/avif", "image/webp"],
-    deviceSizes: [640, 828, 1080, 1200],
+    qualities: [75],
+    formats: ["image/webp", "image/avif"],
+    deviceSizes: [640, 1080],
     imageSizes: [64, 128, 256],
-    minimumCacheTTL: 86400, // 24 hours
+    minimumCacheTTL: 2592000, // 30 days
     remotePatterns: [
       { hostname: "ibb.co" },
       { hostname: "i.ibb.co" },

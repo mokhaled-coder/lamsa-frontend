@@ -5,6 +5,9 @@ import CategoryPageClient from "./CategoryPageClient";
 import { getProductsByCategory, BACKEND } from "../../lib/productsCache";
 import { SITE_URL, getCompany } from "../../lib/config";
 
+export const revalidate = 3600;
+export const dynamicParams = true;
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const config = slugConfigs[slug];

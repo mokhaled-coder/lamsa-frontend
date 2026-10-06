@@ -3,7 +3,7 @@ import IPhone18Hero from "./IPhone18Hero";
 import PhoneHeroPageWrapper from "../../../components/phones/PhoneHeroPageWrapper";
 import ComingSoon from "./ComingSoon";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "iPhone 18 | لمسه للاجهزه الذكيه",

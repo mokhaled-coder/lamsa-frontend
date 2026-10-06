@@ -10,8 +10,8 @@ import ShopByCategory from "./components/ShopByCategory";
 
 const SITE_URL = "https://lamsasmart.com";
 
-// ISR — re-render every 60 seconds and on on-demand revalidateTag("home-config") / revalidatePath("/")
-export const revalidate = 60;
+// ISR — re-render every 3600 seconds and on on-demand revalidateTag("home-config") / revalidatePath("/")
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 export default async function Home() {

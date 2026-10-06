@@ -4,7 +4,7 @@ import IPhone18StandardProducts from "./IPhone18StandardProducts";
 import ComingSoon from "../../iphone-18/ComingSoon";
 import { getProductsByCategory } from "../../../../lib/productsCache";
 
-export const revalidate = 60;
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "iPhone 18 | لمسه للاجهزه الذكيه",

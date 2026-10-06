@@ -64,7 +64,7 @@ export default function ProductCard({
       className="product-card relative flex flex-col h-full rounded-2xl overflow-hidden bg-white shadow-xs"
       dir="rtl"
     >
-      <Link href={`/product/${product._id}`} className="flex flex-col flex-1">
+      <Link href={`/product/${product._id}`} prefetch={false} className="flex flex-col flex-1">
         {/* ── Image ── */}
         <div
           className={`relative w-full overflow-hidden bg-white ${

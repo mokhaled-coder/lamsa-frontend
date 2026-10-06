@@ -24,6 +24,9 @@ async function getProduct(id: string) {
   return getProductById(id);
 }
 
+export const revalidate = 3600;
+export const dynamicParams = true;
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
   // Memoized via React cache — concurrent deduplication with ProductPage

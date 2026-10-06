@@ -6,7 +6,12 @@ export async function POST(req: NextRequest) {
   if (!secret || secret !== process.env.REVALIDATE_SECRET) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  const tag = req.nextUrl.searchParams.get("tag") || "products";
-  revalidateTag(tag);
-  return NextResponse.json({ revalidated: true, tag });
+  const tagParam = req.nextUrl.searchParams.get("tag") || "products";
+  const tags = tagParam.split(",").map((t) => t.trim()).filter(Boolean);
+
+  for (const tag of tags) {
+    revalidateTag(tag);
+  }
+
+  return NextResponse.json({ revalidated: true, tags });
 }

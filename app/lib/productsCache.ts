@@ -61,7 +61,7 @@ async function fetchHomePageData(): Promise<HomePageData> {
   // 1. Try dedicated fast home endpoint
   try {
     const url = new URL("/api/products/home", BACKEND);
-    const r = await safeFetch(url, { next: { revalidate: 120, tags: ["products", "banners", "home-config"] } } as RequestInit);
+    const r = await safeFetch(url);
     if (r.ok) {
       const data = await r.json();
       if (data && Array.isArray(data.products)) return data;
@@ -71,8 +71,8 @@ async function fetchHomePageData(): Promise<HomePageData> {
   // Fallback if /api/products/home is unreachable
   try {
     const [settingsRes, maxRes] = await Promise.all([
-      safeFetch(new URL("/api/admin/sub-categories/home-settings", BACKEND), { next: { revalidate: 120, tags: ["home-config"] } } as RequestInit),
-      safeFetch(new URL("/api/admin/sub-categories/max", BACKEND), { next: { revalidate: 120, tags: ["home-config"] } } as RequestInit),
+      safeFetch(new URL("/api/admin/sub-categories/home-settings", BACKEND)),
+      safeFetch(new URL("/api/admin/sub-categories/max", BACKEND)),
     ]);
     const settings = settingsRes.ok ? await settingsRes.json() : [];
     const maxData = maxRes.ok ? await maxRes.json() : { max: 4 };
@@ -88,7 +88,7 @@ async function fetchHomePageData(): Promise<HomePageData> {
 export const getHomePageData = unstable_cache(
   fetchHomePageData,
   ["home-page-data"],
-  { revalidate: 120, tags: ["products", "banners", "home-config"] }
+  { revalidate: 3600, tags: ["products", "banners", "home-config"] }
 );
 
 // [OPTIMIZED] Module-level cached fetcher for category queries
@@ -97,7 +97,7 @@ const cachedFetchCategoryProducts = unstable_cache(
     try {
       const url = new URL("/api/products/by-category", BACKEND);
       url.search = queryString;
-      const r = await safeFetch(url, { next: { revalidate: 120, tags: ["products"] } } as RequestInit);
+      const r = await safeFetch(url);
       if (!r.ok) return { products: [], total: 0, page: 1, pages: 0 };
       const data = await r.json();
       return data;
@@ -106,7 +106,7 @@ const cachedFetchCategoryProducts = unstable_cache(
     }
   },
   ["products-by-category"],
-  { revalidate: 120, tags: ["products"] }
+  { revalidate: 3600, tags: ["products"] }
 );
 
 export const getProductsByCategory = async (params: {
@@ -143,7 +143,7 @@ export const getAllProducts = unstable_cache(
       url.searchParams.set("page", "1");
       url.searchParams.set("limit", "300");
       url.searchParams.set("fields", FIELDS);
-      const r = await safeFetch(url, { next: { tags: ["products"] } } as RequestInit);
+      const r = await safeFetch(url);
       if (!r.ok) return [];
       const data = await r.json();
       return Array.isArray(data) ? data : (data.products ?? []);
@@ -152,7 +152,7 @@ export const getAllProducts = unstable_cache(
     }
   },
   ["all-products"],
-  { revalidate: 120, tags: ["products"] }
+  { revalidate: 3600, tags: ["products"] }
 );
 
 async function fetchProductsWithBanners() {
@@ -164,7 +164,7 @@ async function fetchProductsWithBanners() {
     // Missing categories (17s, Samsung) were cut off and never reached the homepage.
     url.searchParams.set("limit", "300");
     url.searchParams.set("fields", FIELDS);
-    const r = await safeFetch(url, { next: { tags: ["products"] } } as RequestInit);
+    const r = await safeFetch(url);
     if (r.ok) {
       const data = await r.json();
       products = Array.isArray(data) ? data : (data.products ?? []);
@@ -178,7 +178,7 @@ async function fetchProductsWithBanners() {
     try {
       const bannerUrl = new URL("/api/admin/category-banners-bulk", BACKEND);
       bannerUrl.searchParams.set("categories", categories.join(","));
-      const br = await safeFetch(bannerUrl, { next: { revalidate: 120, tags: ["banners"] } } as RequestInit);
+      const br = await safeFetch(bannerUrl);
       if (br.ok) bannerMap = await br.json();
     } catch { /* banners are non-critical */ }
   }
@@ -189,7 +189,7 @@ async function fetchProductsWithBanners() {
 const cachedFetch = unstable_cache(
   fetchProductsWithBanners,
   ["all-products-with-banners"],
-  { revalidate: 120, tags: ["products", "banners"] }
+  { revalidate: 3600, tags: ["products", "banners"] }
 );
 
 export async function getAllProductsWithBanners() {
@@ -208,7 +208,7 @@ const fetchProductRaw = unstable_cache(
     try {
       const url = new URL(`/api/products/${safeId}`, BACKEND);
       url.searchParams.set("fields", PRODUCT_DETAIL_FIELDS);
-      const r = await safeFetch(url, { next: { revalidate: 300, tags: ["products", `product-${safeId}`] } } as RequestInit);
+      const r = await safeFetch(url);
       if (!r.ok) return null;
       return (await r.json()) as Product;
     } catch {
@@ -216,7 +216,7 @@ const fetchProductRaw = unstable_cache(
     }
   },
   ["product-by-id"],
-  { revalidate: 300, tags: ["products"] }
+  { revalidate: 3600, tags: ["products"] }
 );
 
 export const getProductById = cache(async (id: string) => {

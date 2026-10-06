@@ -9,6 +9,11 @@ export async function GET(req: NextRequest) {
   const page = searchParams.get("page") || "";
   const category = searchParams.get("category") || "";
 
+  // If search query is 1 character, return empty to prevent keystroke storm
+  if (q && q.length < 2) {
+    return NextResponse.json([]);
+  }
+
   // If search query or specific limits/fields are requested, query backend directly
   if (q || limit || fields || page || category) {
     try {
@@ -33,7 +38,7 @@ export async function GET(req: NextRequest) {
 
       return NextResponse.json(items, {
         headers: {
-          "Cache-Control": "public, max-age=30, s-maxage=60, stale-while-revalidate=120",
+          "Cache-Control": "public, max-age=60, s-maxage=300, stale-while-revalidate=600",
         },
       });
     } catch {
